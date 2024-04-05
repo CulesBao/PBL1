@@ -61,10 +61,10 @@ int main()
 	tempData = step3(N, M, T, a);
 			
 	//In thu du lieu		
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-			cout << tempData[i][j] << "		";
-		cout << endl;
-	}
+//	for (int i = 0; i < N; i++)
+//	{
+//		for (int j = 0; j < M; j++)
+//			cout << tempData[i][j] << "		";
+//		cout << endl;
+//	}
 }
