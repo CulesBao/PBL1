@@ -3,6 +3,22 @@ using namespace std;
 
 const long MAX_ARRAY = 1e3;
 
+//Ma tran chuyen vi
+vector <vector<float>> transpose(vector <vector<float>> T)
+{
+	vector <vector<float>> Tt;
+	
+	Tt.resize(T[0].size(), vector<float>(T.size()));
+	
+	for (int i = 0; i < T.size(); i++)
+		for (int j = 0; j < T[0].size(); j++)
+			Tt[j][i] = T[i][j];
+			
+	return Tt;
+}
+//Nhan 2 ma tran
+//Tim cac tri rieng vecto
+
 //Buoc 3: Tinh su chenh lech giua bien ban dau va gia tri trung binh tim duoc o buoc 2
 vector <vector<float>> step3(int N, int M, vector <vector<float>> T, vector <float> a)
 {	
