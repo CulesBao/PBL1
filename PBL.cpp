@@ -1,113 +1,167 @@
 #include <bits/stdc++.h>
-#include <Eigen/Dense>
-using namespace std;
+#include "G:/Nam 1/Ki 2/PBL1/eigen-3.4.0/Eigen/Dense"
+
 using namespace Eigen;
+using namespace std;
 
-const long MAX_ARRAY_SIZE = 1e3;
-typedef vector<vector<float>> FloatMatrix;
-typedef vector<float> FloatVector;
+#define ESP 1e-3
+#define endl '\n'
+#define INF 1e9
+#define ll long long
+typedef double db;
+#define fori(x, v)     for (auto &x : v)
+#define foru(i, a, b) for (int i = a; i <= b; i++)
+#define ford(i, a, b) for (int i = a; i >= b; i--)
 
-// Hàm đọc dữ liệu từ file
-void readData(int &N, int &M, FloatMatrix &dataMatrix, FloatMatrix &tempDataMatrix) {
-    // Đọc dữ liệu từ file data.inp và xuất ra file data.out
-    freopen("data.inp", "r", stdin);
-    freopen("data.out", "w", stdout);
+//Giai he phuong trinh
+MatrixXd solveLinearEquation(MatrixXd matrix) {
+    FullPivHouseholderQR<MatrixXd> qr(matrix.transpose());
+    MatrixXd nullspaceBasis = qr.matrixQ().rightCols(matrix.rows() - qr.rank());
 
-    // Đọc số hàng và số cột
-    cin >> M >> N;
-
-    // Cấp phát bộ nhớ
-    dataMatrix.resize(N, FloatVector(M));
-    tempDataMatrix.resize(N, FloatVector(M));
-
-    // Đọc giá trị cho ma trận dataMatrix
-    for (int i = 0; i < N; i++)
-        for (int j = 0; j < M; j++)
-            cin >> dataMatrix[i][j];
+    return nullspaceBasis;
 }
 
-// Ma trận chuyển vị
-FloatMatrix transpose(FloatMatrix matrix) {
-    FloatMatrix transposedMatrix;
-    transposedMatrix.resize(matrix[0].size(), FloatVector(matrix.size()));
-
-    for (int i = 0; i < matrix.size(); i++)
-        for (int j = 0; j < matrix[0].size(); j++)
-            transposedMatrix[j][i] = matrix[i][j];
-
-    return transposedMatrix;
-}
-
-//Bước 4: Tính tích 2 ma trận
-FloatMatrix step4(FloatMatrix matrix1, FloatMatrix matrix2) {
-    // Lấy kích thước của các ma trận
-    int N = matrix1.size(); // Số hàng của ma trận 1
-    int K = matrix1[0].size(); // Số cột của ma trận 1 (phải bằng số hàng của ma trận 2)
-    int M = matrix2[0].size(); // Số cột của ma trận 2
-
-    // Tạo ma trận kết quả và cấp phát bộ nhớ cho nó
-    FloatMatrix matrixProduct(N, FloatVector(M, 0.0));
-
-    // Thực hiện phép nhân ma trận
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
-            for (int k = 0; k < K; k++) {
-                matrixProduct[i][j] += matrix1[i][k] * matrix2[k][j];
-            }
-        }
-    }
-
+//Ham tinh tich co huong 2 ma tran
+MatrixXd multipleMatrix(MatrixXd matrix1, MatrixXd matrix2) {
+    MatrixXd matrixProduct(matrix1.rows(), matrix2.cols());
+    matrixProduct = matrix1 * matrix2;
     return matrixProduct;
 }
 
-//Bước 5: Tìm trị riêng của ma trận, trả về một vector các kết quả lamda. Sử dụng thuật toán QR
-
-
-// Bước 3: Tính sự chênh lệch giữa biến ban đầu và giá trị trung bình tìm được ở bước 2
-FloatMatrix step3(int N, int M, FloatMatrix dataMatrix, FloatVector avgVector) {
-    FloatMatrix diffMatrix;
-    diffMatrix.resize(N, FloatVector(M));
-
-    for (int i = 0; i < N; i++)
-        for (int j = 0; j < M; j++)
-            diffMatrix[i][j] = dataMatrix[i][j] - avgVector[i];
-
-    return diffMatrix;
+//Ma tran chuyen vi
+MatrixXd transposeMatrix(MatrixXd matrix) {
+    MatrixXd transposedMatrix(matrix.cols(), matrix.rows());
+    transposedMatrix = matrix.transpose();
+    return transposedMatrix;
 }
 
-// Bước 2: Tính vector trung bình
-FloatVector step2(int N, int M, FloatMatrix dataMatrix) {
-    FloatVector avgVector;
-
-    for (int i = 0; i < N; i++) {
-        float sum = 0;
-        for (int j = 0; j < M; j++)
-            sum += dataMatrix[i][j];
-        avgVector.push_back(sum / (float)(M));
+//Buoc 2: Tinh vector trung binh
+MatrixXd averageVector(int N, int M, MatrixXd dataMatrix) {
+    MatrixXd avgVector(N, 1);
+    foru(i, 0, N - 1){
+        double sum = 0;
+        foru(j, 0, M - 1){
+            sum += dataMatrix(i, j);
+        }
+        avgVector(i, 0) = sum / M;
     }
-
     return avgVector;
 }
 
-// Bước 1: Đọc dữ liệu
-int main() {
-    // Khai báo
-    int N, M;
-    FloatMatrix dataMatrix, tempDataMatrix, matrixProduct;
-    FloatVector avgVector, eigenValues;
-
-    readData(N, M, dataMatrix, tempDataMatrix);
-
-    avgVector = step2(N, M, dataMatrix);
-    tempDataMatrix = step3(N, M, dataMatrix, avgVector);
-	matrixProduct = step4(transpose(tempDataMatrix), tempDataMatrix);
-    // eigenValues = findEigenValues(matrixProduct, 100, 1e-6);
-    // In dữ liệu tạm thời ra
-    for (int i = 0; i < N; i++){
-        for (int j = 0; j < M; j++)
-            cout << matrixProduct[i][j] << " ";
-        cout << endl;
+//Buoc 3: Tinh su chenh lech giua dataMatrix va avgVector
+MatrixXd differenceMatrix(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector) {
+    MatrixXd diffMatrix(N, M);
+    foru(i, 0, N - 1){
+        foru(j, 0, M - 1){
+            diffMatrix(i, j) = dataMatrix(i, j) - avgVector(i, 0);
+        }
     }
+    return diffMatrix;
+}
+
+//Buoc 5: Tim tri rieng cua ma tran
+MatrixXd findEigenValues(MatrixXd matrixProduct) {
+    vector<double> eigenValues;
+
+    JacobiSVD<MatrixXd> svd(matrixProduct, ComputeFullU | ComputeFullV);
+    
+    // Loc cac gia tri rieng
+    for (int i = 0; i < svd.singularValues().size(); ++i) {
+        if (svd.singularValues()(i) >= ESP) {
+            eigenValues.push_back(svd.singularValues()(i));
+        }
+    }
+    
+    // Tao ra ma tran moi chua cac tri rieng
+    MatrixXd newEigenValues(eigenValues.size(), 1);
+    for (int i = 0; i < eigenValues.size(); ++i) {
+        newEigenValues(i, 0) = eigenValues[i];
+    }
+
+    return newEigenValues;
+}
+
+//Buoc 6: Tinh cac vector tuong ung voi cac tri rieng
+MatrixXd findEigenVectors(MatrixXd matrixProduct, MatrixXd eigenValues) {
+    MatrixXd eigenVectors(matrixProduct.rows(), eigenValues.size()), tempMatrix(matrixProduct.rows(), matrixProduct.cols());
+    foru (k, 0, eigenValues.size() - 1) {
+        foru(i, 0, matrixProduct.rows() - 1) {
+            foru(j, 0, matrixProduct.cols() - 1) {
+                tempMatrix(i, j) = matrixProduct(i, j);
+                if (i == j)
+                    tempMatrix(i, j) -= eigenValues(k, 0);
+            }
+        }
+        MatrixXd equation = solveLinearEquation(tempMatrix);
+        //Day vao eigenVectors
+        eigenVectors.col(k) = equation.col(0);
+    }
+
+    return eigenVectors;
+}
+
+//Buoc 8: Rut gon ansVector
+MatrixXd normalizeVector(MatrixXd ansVector) {
+    vector <double> normVector;
+    foru(i, 0, ansVector.cols() - 1) {
+        double norm = 0;
+        foru(j, 0, ansVector.rows() - 1) {
+            norm += ansVector(j, i) * ansVector(j, i);
+        }
+        normVector.push_back(sqrt(norm));
+    }
+
+    foru(i, 0, ansVector.cols() - 1) {
+        foru(j, 0, ansVector.rows() - 1) {
+            ansVector(j, i) /= normVector[i];
+        }
+    }
+
+    return ansVector;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    #ifndef online_judge
+        freopen("data1.inp", "r", stdin);
+        freopen("data.out", "w", stdout);
+    #endif
+
+    int N, M;
+
+    // Buoc 1: Doc du lieu
+    cin >> M >> N;
+    MatrixXd dataMatrix(N, M), avgVector(N, 1), diffMatrix(N, M), matrixProduct(N, M), tranMatrix(N, M), eigenValues(N, 1), eigenVectors(N, M);
+    foru(i, 0, N - 1)
+        foru(j, 0, M - 1)
+            cin >> dataMatrix(i, j);
+    
+    //Buoc 2: Tinh vector trung binh
+    avgVector = averageVector(N, M, dataMatrix);
+
+    //Buoc 3: Tinh su chenh lech giua dataMatrix va avgVector
+    diffMatrix = differenceMatrix(N, M, dataMatrix, avgVector);
+
+    //Buoc 4: Tinh tich 2 ma tran
+    tranMatrix = transposeMatrix(diffMatrix);
+    matrixProduct = multipleMatrix(tranMatrix, diffMatrix);
+
+    //Buoc 5: Tim tri rieng cua ma tran
+    eigenValues = findEigenValues(matrixProduct);
+
+    //Buoc 6: Tinh cac vector tuong ung voi cac tri rieng
+    eigenVectors = findEigenVectors(matrixProduct, eigenValues);
+
+    //Buoc 7: Tinh tich 2 ma tran ansVector = matrixProduct * eigenVectors
+    MatrixXd ansVector = multipleMatrix(diffMatrix, eigenVectors);
+
+    //Buoc 8: Rut gon ansVector
+    ansVector = normalizeVector(ansVector);
+
+    //Buoc 9: Xuat ket qua
+    cout << ansVector << endl;
 
     return 0;
 }
