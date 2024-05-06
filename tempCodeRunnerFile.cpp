@@ -1,12 +1,21 @@
-    // // Lọc các giá trị riêng
-    // for (int i = 0; i < svd.singularValues().size(); ++i) {
-    //     if (svd.singularValues()(i) >= threshold) {
-    //         eigenValues.push_back(svd.singularValues()(i));
+int choose;
+    // do{
+    //     choose = 0;
+    //     cout << endl << "Moi chon kieu du lieu: ";
+    //     cout << flush;
+    //     cin >> choose;
+    //     if (choose < 1 || choose > 2) {
+    //         cout << "Vui long chon lai!" << endl;
     //     }
     // }
-    
-    // // Tạo ma trận mới chứa các giá trị riêng đã lọc
-    // MatrixXd newEigenValues(eigenValues.size(), 1);
-    // for (int i = 0; i < eigenValues.size(); ++i) {
-    //     newEigenValues(i, 0) = eigenValues[i];
+    // while (choose < 1 || choose > 2);
+    // switch (choose) {
+    //     case 1:
+    //         cout << "Ban da chon: Du lieu se duoc xuat ra o tep data.out" << endl;
+    //         output.open("data.out");
+    //         isPrintToConsole = false;
+    //         break;
+    //     case 2:
+    //         cout << "Ban da chon: Du lieu se duoc xuat ra o Terminal" << endl;
+    //         break;
     // }
