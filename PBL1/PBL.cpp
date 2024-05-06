@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "G:/Nam 1/Ki 2/PBL1/eigen-3.4.0/Eigen/Dense"
+#include "./eigen-3.4.0/Eigen/Dense"
 
 using namespace Eigen;
 using namespace std;
