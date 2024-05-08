@@ -34,50 +34,58 @@ void readData(int &N, int &M, MatrixXd &dataMatrix, int choose) {
 }
 
 void welcome() {
-    cout << "DO AN LAP TRINH TINH TOAN" << endl;
-    cout << "PHAN TICH TRUC TIEP CAC THANH PHAN PCA" << endl << endl;
-    cout << "_____________________________________________________________________________" << endl << endl;
-    cout << "Giang vien huong dan: PGS.TS Nguyen Tan Khoi" << endl;
-    cout << "Sinh vien thuc hien: Duong Van Chi Bao va Vo Hoang Thai Bao" << endl;
-    cout << "Lop sinh hoat: 23T-DT4" << endl;
-    cout << "_____________________________________________________________________________" << endl << endl;
+    cout << "********************************************************************************" << endl;
+    cout << "*                         DO AN LAP TRINH TINH TOAN 1                          *" << endl;
+    cout << "*                    PHAN TICH TRUC TIEP CAC THANH PHAN PCA                    *" << endl;
+    cout << "********************************************************************************" << endl << endl;
+
+    cout << "Thong tin ve chuong trinh: " << endl;
+    cout << "-  Giang vien huong dan: PGS.TS Nguyen Tan Khoi" << endl;
+    cout << "-  Sinh vien thuc hien: Duong Van Chi Bao va Vo Hoang Thai Bao" << endl;
+    cout << "-  Lop sinh hoat: 23T-DT4" << endl << endl;
 }
 
 void inputSeclection(int &N, int &M, MatrixXd &dataMatrix) {
+    cout << "********************************************************************************" << endl;
+    cout << "*                            CHON DU LIEU TUY CHINH                            *" << endl;
+    cout << "********************************************************************************" << endl << endl;
+
     cout << "An 1: Chon du lieu tu tep data1.inp (du lieu duoc lay tu file word cua Le Hoang Thanh)" << endl;
     cout << "An 2: Chon du lieu tu tep data2.inp (du lieu duoc lay tu Github cua toosyou)" << endl;
     cout << "An 3: Chon du lieu tu tep data3.inp (du lieu duoc lay tu Wikipedia)" << endl;
-    cout << "An 4: Nhap du lieu tay tu Terminal" << endl;
+    cout << "An 4: Nhap du lieu tu ban phim" << endl;
     int c;
     do{
         c = 0;
-        cout << endl << "Moi chon kieu du lieu: ";
+        cout << endl << "Moi chon: ";
         cout << flush;
         cin >> c;
         if (c < 1 || c > 4) {
-            cout << "Vui long chon lai!" << endl;
+            cout << "So vua nhap khong phu hop. Vui long chon lai!" << endl;
         }
     }
     while (c < 1 || c > 4);
     switch (c) {
         case 1:
             input.open("data1.inp");
-            cout << "Ban da chon bo du lieu data1.inp!" << endl;
+            cout << "Ban da chon: bo du lieu data1.inp!" << endl;
             break;
         case 2:
             input.open("data2.inp");
-            cout << "Ban da chon bo du lieu data2.inp!" << endl;
+            cout << "Ban da chon: bo du lieu data2.inp!" << endl;
             break;
         case 3:
             input.open("data3.inp");
-            cout << "Ban da chon bo du lieu data3.inp!" << endl;
+            cout << "Ban da chon: bo du lieu data3.inp!" << endl;
             break;
         case 4:
-            cout << "Ban da chon: Nhap du lieu tay tu Terminal" << endl;
-            cout << "Quy dinh:" << endl;
-            cout << "Dong dau tien: 2 so nguyen N va M" << endl;
-            cout << "N dong tiep theo, moi dong gom co M so. Tuong trung cho ma tran kich thuoc N x M" << endl;
-            cout << "Moi nhap du lieu: " << endl;
+            cout << "Ban da chon: Nhap du lieu tu ban phim" << endl << endl;
+            cout << "--------------------------------------------------------------------------------" << endl;
+            cout << "|                          QUY DINH CACH NHAP DU LIEU                          |" << endl;
+            cout << "|  Dong dau tien: 2 so nguyen N va M.                                          |" << endl;
+            cout << "|  N dong tiep theo: Moi dong gom M , cac so cach nhau boi mot khoang trang    |" << endl;
+            cout << "|  Vui long nhap du lieu o ben duoi.                         |" << endl; 
+            cout << "--------------------------------------------------------------------------------" << endl << endl;
             break;
     }
     cout << flush;
@@ -85,11 +93,14 @@ void inputSeclection(int &N, int &M, MatrixXd &dataMatrix) {
     if (c == 1 || c == 2 || c == 3){
         input.close();
     }
-    cout << "Du lieu da duoc nhap xong!" << endl;
-    cout << "_____________________________________________________________________________" << endl << endl;
+    cout << "Du lieu da duoc nhap xong!" << endl << endl;
 }
 
 void outputSeclection() {
+    cout << "********************************************************************************" << endl;
+    cout << "*                            LUA CHON DINH DANG XUAT                           *" << endl;
+    cout << "********************************************************************************" << endl << endl;
+
     cout << "An 1: Xuat du lieu ra tep data.out" << endl;
     cout << "An 2: Xuat du lieu ra Terminal" << endl;
 
@@ -100,7 +111,7 @@ void outputSeclection() {
         cout << flush;
         cin >> choose;
         if (choose < 1 || choose > 2) {
-            cout << "Vui long chon lai!" << endl;
+            cout << "So vua nhap khong phu hop. Vui long chon lai!" << endl;
         }
     }
     while (choose < 1 || choose > 2);
@@ -111,15 +122,17 @@ void outputSeclection() {
             isPrintToConsole = false;
             break;
         case 2:
-            cout << "Ban da chon: Du lieu se duoc xuat ra o Terminal" << endl;
+            cout << "Ban da chon: Du lieu se duoc xuat ra o Terminal" << endl << endl;
             break;
     }
-    cout << "_____________________________________________________________________________" << endl << endl;
-
 }
 
 void instruction() {
-    cout << "Viec tinh toan da hoan tat! Chuong trinh trai qua 9 buoc:" << endl << endl;
+    cout << "********************************************************************************" << endl;
+    cout << "*                               KET QUA TINH TOAN                              *" << endl;
+    cout << "********************************************************************************" << endl << endl;
+
+    cout << "Viec tinh toan da hoan tat! Sau day la cac buoc ma chuong trinh da thuc hien:" << endl << endl;
     cout << "Buoc 1: Doc du lieu" << endl;
     cout << "Buoc 2: Tinh vector trung binh" << endl;
     cout << "Buoc 3: Tinh su chenh lech giua dataMatrix va avgVector" << endl;
@@ -128,8 +141,7 @@ void instruction() {
     cout << "Buoc 6: Tinh cac vector tuong ung voi cac tri rieng" << endl;
     cout << "Buoc 7: Tinh tich 2 ma tran ansVector = matrixProduct * eigenVectors" << endl;
     cout << "Buoc 8: Rut gon ansVector" << endl;
-    cout << "Buoc 9: Xuat ket qua tuy theo lua chon" << endl;
-    cout << "_____________________________________________________________________________" << endl << endl;
+    cout << "Buoc 9: Xuat ket qua tuy theo lua chon" << endl << endl;
 }
 
 //Giai he phuong trinh
@@ -186,13 +198,27 @@ MatrixXd differenceMatrix(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector)
     return diffMatrix;
 }
 
-//Buoc 5: Tim tri rieng cua ma tran
 MatrixXd findEigenValues(MatrixXd matrixProduct) {
-    vector<double> eigenValues;
-
     JacobiSVD<MatrixXd> svd(matrixProduct, ComputeFullU | ComputeFullV);
-    
-    return svd.singularValues();
+
+    // Số lượng giá trị riêng khác không
+    int nonZeroEigenValues = 0;
+    for (int i = 0; i < svd.singularValues().size(); ++i) {
+        if (svd.singularValues()(i) != 0) {
+            nonZeroEigenValues++;
+        }
+    }
+
+    // Tạo ma trận chứa giá trị riêng
+    MatrixXd eigenValuesMatrix(nonZeroEigenValues, 1);
+    int index = 0;
+    for (int i = 0; i < svd.singularValues().size(); ++i) {
+        if (svd.singularValues()(i) != 0) {
+            eigenValuesMatrix(index++, 0) = svd.singularValues()(i);
+        }
+    }
+
+    return eigenValuesMatrix;
 }
 
 //Buoc 6: Tinh cac vector tuong ung voi cac tri rieng

@@ -8,5 +8,6 @@
         "string": "cpp",
         "vector": "cpp",
         "iosfwd": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }
