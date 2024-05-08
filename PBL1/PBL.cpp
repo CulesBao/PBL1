@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "./eigen-3.4.0/Eigen/Dense"
+#include <windows.h>
 
 using namespace Eigen;
 using namespace std;
@@ -169,9 +170,13 @@ MatrixXd transposeMatrix(MatrixXd matrix) {
 //Buoc 0: Lua chon dau vao
 void inputoutputSetup(int &N, int &M, MatrixXd &dataMatrix) {
     welcome();
+    Sleep(1000);
     inputSeclection(N, M, dataMatrix);
+    Sleep(500);
     outputSeclection();
+    Sleep(500);
     instruction();
+    Sleep(500);
 }
 
 //Buoc 2: Tinh vector trung binh
@@ -266,6 +271,8 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
     output.open("data.out");
     cout << "Nhan tu 2 toi 8 de in ra ket qua o cac buoc tuong ung. Nhan 1 de in ra toan bo qua trinh. Nhan 0 de thoat: " << endl;
 
+    cout << endl << "********************************************************************************" << endl;
+
     int choose;
     do{
         cout << "Vui long chon: ";
@@ -287,38 +294,45 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                         cout << "Buoc 6: Cac vector tuong ung voi cac tri rieng: " << endl << eigenVectors << endl;
                         cout << "Buoc 7: Tich 2 ma tran ansVector = matrixProduct * eigenVectors: " << endl << matrixProduct * eigenVectors << endl;
                         cout << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
-                        cout << "Ket thuc chuong trinh, xin cam on!" << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 2:
                         cout << "Buoc 2: Vector trung binh: " << endl << avgVector << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 3:
                         cout << "Buoc 3: Su chenh lech giua dataMatrix va avgVector: " << endl << diffMatrix << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 4:
                         cout << "Buoc 4: Tich 2 ma tran: " << endl << matrixProduct << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 5:
                         cout << "Buoc 5: Tri rieng cua ma tran: " << endl << eigenValues << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 6:
                         cout << "Buoc 6: Cac vector tuong ung voi cac tri rieng: " << endl << eigenVectors << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 7:
                         cout << "Buoc 7: Tich 2 ma tran ansVector = matrixProduct * eigenVectors: " << endl << matrixProduct * eigenVectors << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 8:
                         cout << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                 }
             }
             else {
                 switch (choose) {
                     case 0:
-                        cout << "Ket thuc chuong trinh, xin cam on!" << endl;
+                        cout << "Ket thuc chuong trinh, xin vui long mo file data.out de xem ket qua" << endl;
                         break;
                     case 1:
-                        cout << "Ket thuc chuong trinh, xin vui long mo file data.out de xem ket qua" << endl;
+                        cout << "Ban da chon: In ra toan bo qua trinh" << endl;
                         output << "Buoc 2: Vector trung binh: " << endl << avgVector << endl;
                         output << "Buoc 3: Su chenh lech giua dataMatrix va avgVector: " << endl << diffMatrix << endl;
                         output << "Buoc 4: Tich 2 ma tran: " << endl << matrixProduct << endl;
@@ -326,33 +340,49 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                         output << "Buoc 6: Cac vector tuong ung voi cac tri rieng: " << endl << eigenVectors << endl;
                         output << "Buoc 7: Tich 2 ma tran ansVector = matrixProduct * eigenVectors: " << endl << matrixProduct * eigenVectors << endl;
                         output << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 2:
+                        cout << "Ban da chon: In ra buoc 2" << endl;
                         output << "Buoc 2: Vector trung binh: " << endl << avgVector << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 3:
+                        cout << "Ban da chon: In ra buoc 3" << endl;
                         output << "Buoc 3: Su chenh lech giua dataMatrix va avgVector: " << endl << diffMatrix << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 4:
+                        cout << "Ban da chon: In ra buoc 4" << endl;
                         output << "Buoc 4: Tich 2 ma tran: " << endl << matrixProduct << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 5:
+                        cout << "Ban da chon: In ra buoc 5" << endl;
                         output << "Buoc 5: Tri rieng cua ma tran: " << endl << eigenValues << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 6:
+                        cout << "Ban da chon: In ra buoc 6" << endl;
                         output << "Buoc 6: Cac vector tuong ung voi cac tri rieng: " << endl << eigenVectors << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 7:
+                        cout << "Ban da chon: In ra buoc 7" << endl;
                         output << "Buoc 7: Tich 2 ma tran ansVector = matrixProduct * eigenVectors: " << endl << matrixProduct * eigenVectors << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                     case 8:
+                        cout << "Ban da chon: In ra buoc 8" << endl;
                         output << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
+                        cout << "********************************************************************************" << endl;
                         break;
                 }
             }
         }
+        Sleep(500);
     }
-    while (choose != 0 and choose != 1); 
+    while (choose != 0); 
     output.close();
 }
 
@@ -391,6 +421,10 @@ int main() {
 
     //Buoc 9: Xuat ket qua
     printOutput(N, M, dataMatrix, avgVector, diffMatrix, matrixProduct, eigenValues, eigenVectors, ansVector);
+
+    //Buoc 10: An phim bat ki de thoat chuong trinh
+    cout << flush << endl;
+    system("pause");
 
     return 0;
 }
