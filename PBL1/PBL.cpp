@@ -18,7 +18,7 @@ ofstream output;
 
 //Doc du lieu
 void readData(int &N, int &M, MatrixXd &dataMatrix, int choose) {
-    if (choose == 1 || choose == 2 || choose == 3) {
+    if (choose == 1) {
         input >> N >> M;
         dataMatrix.resize(N, M);
         foru(i, 0, N - 1) {
@@ -51,47 +51,53 @@ void inputSeclection(int &N, int &M, MatrixXd &dataMatrix) {
     cout << "*                            CHON DU LIEU TUY CHINH                            *" << endl;
     cout << "********************************************************************************" << endl << endl;
 
-    cout << "An 1: Chon du lieu tu tep data1.inp (du lieu duoc lay tu file word cua Le Hoang Thanh)" << endl;
-    cout << "An 2: Chon du lieu tu tep data2.inp (du lieu duoc lay tu Github cua toosyou)" << endl;
-    cout << "An 3: Chon du lieu tu tep data3.inp (du lieu duoc lay tu Wikipedia)" << endl;
-    cout << "An 4: Nhap du lieu tu ban phim" << endl;
+    cout << "Da co san 3 bo du lieu: " << endl;
+    cout << "1. data1.inp (du lieu duoc lay tu file word cua Le Hoang Thanh)" << endl;
+    cout << "2. data2.inp (du lieu duoc lay tu Github cua toosyou)" << endl;
+    cout << "3. data3.inp (du lieu duoc lay tu Wikipedia)" << endl << endl;
+
+    cout << "--------------------------------------------------------------------------------" << endl;
+    cout << "|                          QUY DINH CACH NHAP DU LIEU                          |" << endl;
+    cout << "|  Dong dau tien: 2 so nguyen N va M.                                          |" << endl;
+    cout << "|  N dong tiep theo: Moi dong gom M , cac so cach nhau boi mot khoang trang    |" << endl;
+    cout << "--------------------------------------------------------------------------------" << endl << endl;
+
+    cout << "Nhan 1 de chon viec nhap tu file" << endl;
+    cout << "Nhan 2 de chon viec nhap tu ban phim" << endl;
     int c;
     do{
         c = 0;
         cout << endl << "Moi chon: ";
         cout << flush;
         cin >> c;
-        if (c < 1 || c > 4) {
+        if (c < 1 || c > 2) {
             cout << "So vua nhap khong phu hop. Vui long chon lai!" << endl;
         }
     }
-    while (c < 1 || c > 4);
+    while (c < 1 || c > 2);
+    string nameFile;
     switch (c) {
-        case 1:
-            input.open("data1.inp");
-            cout << "Ban da chon: bo du lieu data1.inp!" << endl;
+        case 1: 
+            cout << "Ban da chon: Du lieu se duoc nhap tu file!" << endl;
+            do{
+                cout << "Moi nhap ten file: ";
+                cout << flush;
+                cin >> nameFile;
+                input.open(nameFile);
+                if (input .fail()) {
+                    cout << "Khong tim thay file. Vui long nhap lai!" << endl;
+                }
+            }
+            while (input .fail());
             break;
         case 2:
-            input.open("data2.inp");
-            cout << "Ban da chon: bo du lieu data2.inp!" << endl;
-            break;
-        case 3:
-            input.open("data3.inp");
-            cout << "Ban da chon: bo du lieu data3.inp!" << endl;
-            break;
-        case 4:
-            cout << "Ban da chon: Nhap du lieu tu ban phim" << endl << endl;
-            cout << "--------------------------------------------------------------------------------" << endl;
-            cout << "|                          QUY DINH CACH NHAP DU LIEU                          |" << endl;
-            cout << "|  Dong dau tien: 2 so nguyen N va M.                                          |" << endl;
-            cout << "|  N dong tiep theo: Moi dong gom M , cac so cach nhau boi mot khoang trang    |" << endl;
-            cout << "|  Vui long nhap du lieu o ben duoi.                         |" << endl; 
-            cout << "--------------------------------------------------------------------------------" << endl << endl;
+            cout << "Ban da chon: Du lieu se duoc nhap tu ban phim!" << endl;
+            cout << "Moi nhap du lieu o ben duoi" << endl;
             break;
     }
     cout << flush;
     readData(N, M, dataMatrix, c);
-    if (c == 1 || c == 2 || c == 3){
+    if (c == 1){
         input.close();
     }
     cout << "Du lieu da duoc nhap xong!" << endl << endl;
@@ -156,7 +162,15 @@ MatrixXd solveLinearEquation(MatrixXd matrix) {
 //Ham tinh tich co huong 2 ma tran
 MatrixXd multipleMatrix(MatrixXd matrix1, MatrixXd matrix2) {
     MatrixXd matrixProduct(matrix1.rows(), matrix2.cols());
-    matrixProduct = matrix1 * matrix2;
+            foru(i, 0, matrix1.rows() - 1) {
+        foru(j, 0, matrix2.cols() - 1) {
+            double sum = 0;
+            foru(k, 0, matrix1.cols() - 1) {
+                sum += matrix1(i, k) * matrix2(k, j);
+            }
+            matrixProduct(i, j) = sum;
+        }
+    }
     return matrixProduct;
 }
 
@@ -203,27 +217,11 @@ MatrixXd differenceMatrix(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector)
     return diffMatrix;
 }
 
+//Tim tri rieng
 MatrixXd findEigenValues(MatrixXd matrixProduct) {
     JacobiSVD<MatrixXd> svd(matrixProduct, ComputeFullU | ComputeFullV);
 
-    // Số lượng giá trị riêng khác không
-    int nonZeroEigenValues = 0;
-    for (int i = 0; i < svd.singularValues().size(); ++i) {
-        if (svd.singularValues()(i) != 0) {
-            nonZeroEigenValues++;
-        }
-    }
-
-    // Tạo ma trận chứa giá trị riêng
-    MatrixXd eigenValuesMatrix(nonZeroEigenValues, 1);
-    int index = 0;
-    for (int i = 0; i < svd.singularValues().size(); ++i) {
-        if (svd.singularValues()(i) != 0) {
-            eigenValuesMatrix(index++, 0) = svd.singularValues()(i);
-        }
-    }
-
-    return eigenValuesMatrix;
+    return svd.singularValues();
 }
 
 //Buoc 6: Tinh cac vector tuong ung voi cac tri rieng
