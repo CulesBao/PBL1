@@ -177,7 +177,11 @@ MatrixXd multipleMatrix(MatrixXd matrix1, MatrixXd matrix2) {
 //Ma tran chuyen vi
 MatrixXd transposeMatrix(MatrixXd matrix) {
     MatrixXd transposedMatrix(matrix.cols(), matrix.rows());
-    transposedMatrix = matrix.transpose();
+    foru(i, 0, matrix.rows() - 1) {
+        foru(j, 0, matrix.cols() - 1) {
+            transposedMatrix(j, i) = matrix(i, j);
+        }
+    }
     return transposedMatrix;
 }
 
