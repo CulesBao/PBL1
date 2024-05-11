@@ -52,9 +52,10 @@ void inputSeclection(int &N, int &M, MatrixXd &dataMatrix) {
     cout << "********************************************************************************" << endl << endl;
 
     cout << "Da co san 3 bo du lieu: " << endl;
-    cout << "1. data1.inp (du lieu duoc lay tu file word cua Le Hoang Thanh)" << endl;
-    cout << "2. data2.inp (du lieu duoc lay tu Github cua toosyou)" << endl;
-    cout << "3. data3.inp (du lieu duoc lay tu Wikipedia)" << endl << endl;
+    cout << "1. FaceDataset.inp (Bo du lieu khuon mat tham khao tu Le Hoang Thanh)" << endl;
+    cout << "2. IrisDataset.inp (Bo du lieu phan tich cac loai hoa, day la bo du lieu huyen thoai trong phan tich PCA)" << endl;
+    cout << "2. GithubDataset.inp (du lieu tham khao tu Github cua toosyou)" << endl;
+    cout << "3. WikiDataset.inp (du lieu tham khao tu Wikipedia)" << endl << endl;
 
     cout << "--------------------------------------------------------------------------------" << endl;
     cout << "|                          QUY DINH CACH NHAP DU LIEU                          |" << endl;
@@ -222,26 +223,53 @@ MatrixXd differenceMatrix(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector)
 }
 
 //Tim tri rieng
-MatrixXd findEigenValues(MatrixXd matrixProduct) {
+MatrixXd findEigenValues(const MatrixXd& matrixProduct) {
+    MatrixXd eigenValues(matrixProduct.rows(), 1);
+    vector<double> tempVector(matrixProduct.rows());
     JacobiSVD<MatrixXd> svd(matrixProduct, ComputeFullU | ComputeFullV);
 
-    return svd.singularValues();
+    for (int i = 0; i < matrixProduct.rows(); ++i) {
+        tempVector[i] = svd.singularValues()(i);
+    }
+    
+    sort(tempVector.begin(), tempVector.end(), greater<double>());
+
+    int eigenIndex = 0;
+    for (int i = 0; i < matrixProduct.rows() - 1; ++i) {
+        if (fabs(tempVector[i] - tempVector[i + 1]) > ESP && fabs(tempVector[i]) > ESP) {
+            eigenValues(eigenIndex++, 0) = tempVector[i];
+        }
+    }
+    if (fabs(tempVector[matrixProduct.rows() - 1]) > ESP) {
+        eigenValues(eigenIndex++, 0) = tempVector[matrixProduct.rows() - 1];
+    }
+
+    return eigenValues.block(0, 0, eigenIndex, 1);
 }
 
 //Buoc 6: Tinh cac vector tuong ung voi cac tri rieng
-MatrixXd findEigenVectors(MatrixXd matrixProduct, MatrixXd eigenValues) {
-    MatrixXd eigenVectors(matrixProduct.rows(), eigenValues.size()), tempMatrix(matrixProduct.rows(), matrixProduct.cols());
-    foru (k, 0, eigenValues.size() - 1) {
-        foru(i, 0, matrixProduct.rows() - 1) {
-            foru(j, 0, matrixProduct.cols() - 1) {
-                tempMatrix(i, j) = matrixProduct(i, j);
-                if (i == j)
-                    tempMatrix(i, j) -= eigenValues(k, 0);
-            }
+MatrixXd findEigenVectors(const MatrixXd& matrixProduct, const MatrixXd& eigenValues) {
+    MatrixXd eigenVectors(matrixProduct.rows(), eigenValues.size());
+
+    for (int k = 0; k < eigenValues.size(); ++k) {
+        MatrixXd tempMatrix = matrixProduct;
+
+        // Trừ eigenvalue từ từng phần tử trên đường chéo chính
+        for (int i = 0; i < tempMatrix.rows(); ++i) {
+            tempMatrix(i, i) -= eigenValues(k, 0);
         }
-        MatrixXd equation = solveLinearEquation(tempMatrix);
-        //Day vao eigenVectors
-        eigenVectors.col(k) = equation.col(0);
+
+        // Giải hệ phương trình tuyến tính để tìm eigenvector
+        MatrixXd nullspace = solveLinearEquation(tempMatrix);
+
+        // Kiểm tra xem hệ phương trình có nghiệm không
+        if (nullspace.cols() > 0) {
+            // Gán eigenvector vào ma trận kết quả
+            eigenVectors.col(k) = nullspace.col(0); // Chọn một vector từ không gian null
+        } else {
+            // Nếu không có nghiệm, giảm đi một cột của ma trận eigenVectors
+            eigenVectors.conservativeResize(Eigen::NoChange, eigenVectors.cols() - 1);
+        }
     }
 
     return eigenVectors;
@@ -258,7 +286,7 @@ MatrixXd normalizeVector(MatrixXd ansVector) {
         normVector.push_back(sqrt(norm));
     }
 
-    foru(i, 0, ansVector.cols() - 1) {
+    foru(i, 0, ansVector.cols() - 1) { 
         foru(j, 0, ansVector.rows() - 1) {
             ansVector(j, i) /= normVector[i];
         }
@@ -271,7 +299,10 @@ MatrixXd normalizeVector(MatrixXd ansVector) {
 void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd diffMatrix, MatrixXd matrixProduct, MatrixXd eigenValues, MatrixXd eigenVectors, MatrixXd ansVector) {
     ofstream output;
     output.open("data.out");
-    cout << "Nhan tu 2 toi 8 de in ra ket qua o cac buoc tuong ung. Nhan 1 de in ra toan bo qua trinh. Nhan 0 de thoat: " << endl;
+    cout << "Nhan 1 de in ra toan bo qua trinh" << endl;
+    cout << "Nhan 8 de in ra ket qua cuoi cung" << endl;
+    cout << "Nhan cac phim tu 2 toi 7 de in ra ket qua o cac buoc tuonng ung" << endl;
+    cout << "Nhan 0 de thoat chuong trinh" << endl;
 
     cout << endl << "********************************************************************************" << endl;
 
@@ -323,7 +354,7 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                         cout << "********************************************************************************" << endl;
                         break;
                     case 8:
-                        cout << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
+                        cout << "Ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
                         cout << "********************************************************************************" << endl;
                         break;
                 }
@@ -341,7 +372,7 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                         output << "Buoc 5: Tri rieng cua ma tran: " << endl << eigenValues << endl;
                         output << "Buoc 6: Cac vector tuong ung voi cac tri rieng: " << endl << eigenVectors << endl;
                         output << "Buoc 7: Tich 2 ma tran ansVector = matrixProduct * eigenVectors: " << endl << matrixProduct * eigenVectors << endl;
-                        output << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
+                        output << "Ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
                         cout << "********************************************************************************" << endl;
                         break;
                     case 2:
