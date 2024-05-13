@@ -10,7 +10,8 @@
         "iosfwd": "cpp",
         "*.expression": "cpp",
         "alignedvector3": "cpp",
-        "fft": "cpp"
+        "fft": "cpp",
+        "ratio": "cpp"
     },
     "cmake.configureOnOpen": false
 }

@@ -151,15 +151,6 @@ void instruction() {
     cout << "Buoc 8: Rut gon ansVector" << endl;
     cout << "Buoc 9: Xuat ket qua tuy theo lua chon" << endl << endl;
 }
-
-//Giai he phuong trinh
-MatrixXd solveLinearEquation(MatrixXd matrix) {
-    FullPivHouseholderQR<MatrixXd> qr(matrix.transpose());
-    MatrixXd nullspaceBasis = qr.matrixQ().rightCols(matrix.rows() - qr.rank());
-
-    return nullspaceBasis;
-}
-
 //Ham tinh tich co huong 2 ma tran
 MatrixXd multipleMatrix(MatrixXd matrix1, MatrixXd matrix2) {
     MatrixXd matrixProduct(matrix1.rows(), matrix2.cols());
@@ -222,58 +213,134 @@ MatrixXd differenceMatrix(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector)
     return diffMatrix;
 }
 
-//Tim tri rieng
-MatrixXd findEigenValues(const MatrixXd& matrixProduct) {
-    MatrixXd eigenValues(matrixProduct.rows(), 1);
-    vector<double> tempVector(matrixProduct.rows());
-    JacobiSVD<MatrixXd> svd(matrixProduct, ComputeFullU | ComputeFullV);
 
-    for (int i = 0; i < matrixProduct.rows(); ++i) {
-        tempVector[i] = svd.singularValues()(i);
+// Bước 5 và 6: Tìm eigenValues và eigenVectors bằng phương pháp jac
+void jacobiRotate(MatrixXd &A, MatrixXd &V, int p, int q) {
+    double c, s;
+    if (A(p, q) != 0.0) {
+        double d = (A(q, q) - A(p, p)) / (2.0 * A(p, q));
+        double t = (d >= 0) ? 1.0 / (std::fabs(d) + std::sqrt(1.0 + d*d)) : -1.0 / (std::fabs(d) + std::sqrt(1.0 + d*d));
+        double t2 = t / std::sqrt(1.0 + t*t);
+        double t1 = t * t2;
+
+        c = 1.0 / std::sqrt(1.0 + t*t);
+        s = c * t;
+    } else {
+        c = 1.0;
+        s = 0.0;
     }
+
+    // Thực hiện ma trận xoay Jacobi
+    double a_pp = A(p, p);
+    double a_qq = A(q, q);
+    double a_pq = A(p, q);
+    A(p, p) = c*c*a_pp - 2.0*c*s*a_pq + s*s*a_qq;
+    A(q, q) = s*s*a_pp + 2.0*c*s*a_pq + c*c*a_qq;
+    A(p, q) = 0.0;
+    A(q, p) = 0.0;
+
+    for (int k = 0; k < A.rows(); ++k) {
+        if (k != p && k != q) {
+            double a_pk = A(p, k);
+            double a_qk = A(q, k);
+            A(p, k) = c*a_pk - s*a_qk;
+            A(k, p) = A(p, k);
+            A(q, k) = s*a_pk + c*a_qk;
+            A(k, q) = A(q, k);
+        }
+
+        double v_pk = V(k, p);
+        double v_qk = V(k, q);
+        V(k, p) = c*v_pk - s*v_qk;
+        V(k, q) = s*v_pk + c*v_qk;
+    }
+}
+
+// Sửa lại hàm Jacobi để trả về eigenvalues và eigenvectors
+void jacobiEigen(MatrixXd A, MatrixXd &eigenValues, MatrixXd &eigenVectors, int maxIter = 100, double tolerance = 1e-8) {
+    int n = A.rows();
+    eigenVectors = MatrixXd::Identity(n, n); // Khởi tạo ma trận eigenVectors là ma trận đơn vị
+
+    int iter = 0;
+    while (iter < maxIter) {
+        double maxOffDiag = 0.0;
+        int p, q; // Vị trí của phần tử ngoại đường chéo lớn nhất
+        // Tìm phần tử ngoại đường chéo lớn nhất
+        for (int i = 0; i < n - 1; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                if (std::abs(A(i, j)) > maxOffDiag) {
+                    maxOffDiag = std::abs(A(i, j));
+                    p = i;
+                    q = j;
+                }
+            }
+        }
+
+        // Kiểm tra điều kiện dừng
+        if (maxOffDiag < tolerance) break;
+
+        // Tính góc xoay
+        double theta = 0.5 * std::atan2(2 * A(p, q), A(p, p) - A(q, q));
+        double c = std::cos(theta);
+        double s = std::sin(theta);
+
+        // Tạo ma trận xoay
+        MatrixXd R = MatrixXd::Identity(n, n);
+        R(p, p) = c;
+        R(q, q) = c;
+        R(p, q) = -s;
+        R(q, p) = s;
+
+        // Cập nhật ma trận A và ma trận eigenVectors
+        A = R.transpose() * A * R;
+        eigenVectors = eigenVectors * R;
+
+        iter++;
+    }
+
+    // Lấy eigenvalues từ ma trận A (ma trận đường chéo chứa eigenvalues)
+    eigenValues.resize(n, 1);
+    for (int i = 0; i < n; ++i) {
+        eigenValues(i, 0) = A(i, i);
+    }
+}
+
+//Buoc 7: Loc ra cac eigenValues va eigenVectors phu hop
+void filterEigen(MatrixXd& eigenValues, MatrixXd& eigenVectors) {
+    for (int i = 0; i < eigenValues.rows() - 1; ++i) {
+        for (int j = i + 1; j < eigenValues.rows(); ++j) {
+            if (eigenValues(i, 0) < eigenValues(j, 0)) {
+                double tempValue = eigenValues(i, 0);
+                eigenValues(i, 0) = eigenValues(j, 0);
+                eigenValues(j, 0) = tempValue;
+
+                MatrixXd tempVector = eigenVectors.col(i);
+                eigenVectors.col(i) = eigenVectors.col(j);
+                eigenVectors.col(j) = tempVector;
+            }
+        }
+    }
+
+    // Khai báo các ma trận phụ
+    int index = 0;
+    MatrixXd tempEigenValues(eigenValues.rows(), 1);
+    MatrixXd tempEigenVectors(eigenVectors.rows(), eigenVectors.cols());
     
-    sort(tempVector.begin(), tempVector.end(), greater<double>());
-
-    int eigenIndex = 0;
-    for (int i = 0; i < matrixProduct.rows() - 1; ++i) {
-        if (fabs(tempVector[i] - tempVector[i + 1]) > ESP && fabs(tempVector[i]) > ESP) {
-            eigenValues(eigenIndex++, 0) = tempVector[i];
+    for (int i = 0; i < eigenValues.rows() - 1; ++i) {
+        if (fabs(eigenValues(i, 0) - 0.0) > ESP && fabs(eigenValues(i, 0) - eigenValues(i + 1, 0)) > ESP) {
+            tempEigenValues(index, 0) = eigenValues(i, 0);
+            tempEigenVectors.col(index) = eigenVectors.col(i);
+            index++;
         }
     }
-    if (fabs(tempVector[matrixProduct.rows() - 1]) > ESP) {
-        eigenValues(eigenIndex++, 0) = tempVector[matrixProduct.rows() - 1];
-    }
 
-    return eigenValues.block(0, 0, eigenIndex, 1);
+    // Sao chép kết quả vào ma trận gốc
+    eigenValues.resize(index, 1);
+    eigenVectors.resize(eigenVectors.rows(), index);
+    eigenValues = tempEigenValues.block(0, 0, index, 1);
+    eigenVectors = tempEigenVectors.block(0, 0, eigenVectors.rows(), index);
 }
 
-//Buoc 6: Tinh cac vector tuong ung voi cac tri rieng
-MatrixXd findEigenVectors(const MatrixXd& matrixProduct, const MatrixXd& eigenValues) {
-    MatrixXd eigenVectors(matrixProduct.rows(), eigenValues.size());
-
-    for (int k = 0; k < eigenValues.size(); ++k) {
-        MatrixXd tempMatrix = matrixProduct;
-
-        // Trừ eigenvalue từ từng phần tử trên đường chéo chính
-        for (int i = 0; i < tempMatrix.rows(); ++i) {
-            tempMatrix(i, i) -= eigenValues(k, 0);
-        }
-
-        // Giải hệ phương trình tuyến tính để tìm eigenvector
-        MatrixXd nullspace = solveLinearEquation(tempMatrix);
-
-        // Kiểm tra xem hệ phương trình có nghiệm không
-        if (nullspace.cols() > 0) {
-            // Gán eigenvector vào ma trận kết quả
-            eigenVectors.col(k) = nullspace.col(0); // Chọn một vector từ không gian null
-        } else {
-            // Nếu không có nghiệm, giảm đi một cột của ma trận eigenVectors
-            eigenVectors.conservativeResize(Eigen::NoChange, eigenVectors.cols() - 1);
-        }
-    }
-
-    return eigenVectors;
-}
 
 //Buoc 8: Rut gon ansVector
 MatrixXd normalizeVector(MatrixXd ansVector) {
@@ -441,11 +508,13 @@ int main() {
     tranMatrix = transposeMatrix(diffMatrix);
     matrixProduct = multipleMatrix(tranMatrix, diffMatrix);
 
-    //Buoc 5: Tim tri rieng cua ma tran
-    eigenValues = findEigenValues(matrixProduct);
+    //Buoc 5: Tim eigenvalues va eigenvectors
+    eigenValues.resize(N, 1);
+    eigenVectors.resize(N, N);
+    jacobiEigen(matrixProduct, eigenValues, eigenVectors);
 
-    //Buoc 6: Tinh cac vector tuong ung voi cac tri rieng
-    eigenVectors = findEigenVectors(matrixProduct, eigenValues);
+    //Buoc 6: Loc ra cac eigenValues va eigenVectors phu hop
+    filterEigen(eigenValues, eigenVectors);
 
     //Buoc 7: Tinh tich 2 ma tran ansVector = matrixProduct * eigenVectors
     MatrixXd ansVector = multipleMatrix(diffMatrix, eigenVectors);
