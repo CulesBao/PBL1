@@ -55,7 +55,8 @@ void inputSeclection(int &N, int &M, MatrixXd &dataMatrix) {
     cout << "1. FaceDataset.inp (Bo du lieu khuon mat tham khao tu Le Hoang Thanh)" << endl;
     cout << "2. IrisDataset.inp (Bo du lieu phan tich cac loai hoa, day la bo du lieu huyen thoai trong phan tich PCA)" << endl;
     cout << "2. GithubDataset.inp (du lieu tham khao tu Github cua toosyou)" << endl;
-    cout << "3. WikiDataset.inp (du lieu tham khao tu Wikipedia)" << endl << endl;
+    cout << "3. WikiDataset.inp (du lieu tham khao tu Wikipedia)" << endl;
+    cout << "4. SydneyDataset.inp (du lieu tham khao tu truong dai hoc Sydney thong qua Google Dataset Search Engine)" << endl << endl;
 
     cout << "--------------------------------------------------------------------------------" << endl;
     cout << "|                          QUY DINH CACH NHAP DU LIEU                          |" << endl;
