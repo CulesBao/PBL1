@@ -475,7 +475,7 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                         break;
                     case 8:
                         cout << "Ban da chon: In ra buoc 8" << endl;
-                        output << "Buoc 8: Rut gon ansVector, ket qua cuoi cung la: " << endl << normalizeVector(ansVector) << endl;
+                        output << normalizeVector(ansVector) << endl;
                         cout << "********************************************************************************" << endl;
                         break;
                 }
