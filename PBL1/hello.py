@@ -3,7 +3,7 @@ from PIL import Image
 from sklearn.decomposition import PCA
 
 # Đọc dữ liệu từ tệp văn bản
-data = np.loadtxt('data.out')
+data = np.loadtxt('IrisDataset.inp')
 
 # Áp dụng PCA để giảm chiều dữ liệu xuống còn 2 chiều
 pca = PCA(n_components=2)
@@ -27,4 +27,4 @@ image = Image.fromarray(image_data)
 image.show()  # Hiển thị ảnh
 image.save('generated_image.png')  # Lưu ảnh
 
-print("Image saved as generated_image.png")
+# print("Image saved as generated_image.png")

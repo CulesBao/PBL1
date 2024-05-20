@@ -110,7 +110,7 @@ void outputSeclection() {
     cout << "*                            LUA CHON DINH DANG XUAT                           *" << endl;
     cout << "********************************************************************************" << endl << endl;
 
-    cout << "An 1: Xuat du lieu ra tep data.out" << endl;
+    cout << "An 1: Xuat du lieu ra tep data.out va tao ra hinh anh" << endl;
     cout << "An 2: Xuat du lieu ra Terminal" << endl;
 
     int choose;
@@ -367,12 +367,12 @@ MatrixXd normalizeVector(MatrixXd ansVector) {
 void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd diffMatrix, MatrixXd matrixProduct, MatrixXd eigenValues, MatrixXd eigenVectors, MatrixXd ansVector) {
     ofstream output;
     output.open("data.out");
-    cout << "Nhan 1 de in ra toan bo qua trinh" << endl;
-    cout << "Nhan 8 de in ra ket qua cuoi cung" << endl;
-    cout << "Nhan cac phim tu 2 toi 7 de in ra ket qua o cac buoc tuonng ung" << endl;
-    cout << "Nhan 0 de thoat chuong trinh" << endl;
-
-    cout << endl << "********************************************************************************" << endl;
+    cout << "-----------------------------------------------------------------------------" << endl;
+    cout << "|  Nhan 1 de in ra toan bo qua trinh                                         |" << endl;
+    cout << "|  Nhan 8 de in ra ket qua cuoi cung                                         |" << endl;
+    cout << "|  Nhan cac phim tu 2 toi 7 de in ra ket qua o cac buoc tuonng ung           |" << endl;
+    cout << "|  Nhan 0 de thoat chuong trinh                                              |" << endl;
+    cout << "-----------------------------------------------------------------------------" << endl << endl;
 
     int choose;
     do{
@@ -476,7 +476,7 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                     case 8:
                         cout << "Ban da chon: In ra buoc 8" << endl;
                         output << normalizeVector(ansVector) << endl;
-                        cout << "********************************************************************************" << endl;
+                        cout << "********************************************************************************" << endl;                        
                         break;
                 }
             }
@@ -527,6 +527,8 @@ int main() {
 
     //Buoc 10: An phim bat ki de thoat chuong trinh
     cout << flush << endl;
+    if (!isPrintToConsole)
+        system("python hello.py");
     system("pause");
 
     return 0;
