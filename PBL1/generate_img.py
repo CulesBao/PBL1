@@ -3,7 +3,7 @@ from PIL import Image
 from sklearn.decomposition import PCA
 
 # Đọc dữ liệu từ tệp văn bản
-data = np.loadtxt('IrisDataset.inp')
+data = np.loadtxt('data_img.txt')
 
 # Áp dụng PCA để giảm chiều dữ liệu xuống còn 2 chiều
 pca = PCA(n_components=2)
