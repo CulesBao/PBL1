@@ -124,7 +124,7 @@ void instruction() {
 //Ham tinh tich co huong 2 ma tran
 MatrixXd multipleMatrix(MatrixXd matrix1, MatrixXd matrix2) {
     MatrixXd matrixProduct(matrix1.rows(), matrix2.cols());
-            foru(i, 0, matrix1.rows() - 1) {
+    foru(i, 0, matrix1.rows() - 1) {
         foru(j, 0, matrix2.cols() - 1) {
             double sum = 0;
             foru(k, 0, matrix1.cols() - 1) {
@@ -342,7 +342,7 @@ void printOutput(int N, int M, MatrixXd dataMatrix, MatrixXd avgVector, MatrixXd
                     cout << "********************************************************************************" << endl;
                     break;
                 case 7:
-                    cout << "Buoc 7: Tich 2 ma tran ansVector = matrixProduct * eigenVectors: " << endl << matrixProduct * eigenVectors << endl;
+                    cout << "Buoc 7: Tich 2 ma tran ansVector = diffMatrix * eigenVectors: " << endl << ansVector << endl;
                     cout << "********************************************************************************" << endl;
                     break;
                 case 8:
@@ -395,7 +395,7 @@ int main() {
     //Buoc 6: Loc ra cac eigenValues va eigenVectors phu hop
     filterEigen(eigenValues, eigenVectors);
 
-    //Buoc 7: Tinh tich 2 ma tran ansVector = matrixProduct * eigenVectors
+    //Buoc 7: Tinh tich 2 ma tran ansVector = diffMatrix * eigenVectors
     MatrixXd ansVector = multipleMatrix(diffMatrix, eigenVectors);
 
     //Buoc 8: Rut gon ansVector
@@ -403,5 +403,6 @@ int main() {
     //Buoc 9: Xuat ket qua
     printOutput(N, M, dataMatrix, avgVector, diffMatrix, matrixProduct, eigenValues, eigenVectors, ansVector);
 
+    system("pause");
     return 0;
 }
